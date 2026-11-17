@@ -1,0 +1,29 @@
+==================================================
+         SSH SECURITY INVESTIGATION REPORT
+==================================================
+
+Detection Rule: 100100
+Log Source: /var/ossec/logs/alerts/alerts.json
+Analysis Date: Tue Nov 17 06:28:10 PM UTC 2026
+
+[1] FAILED SSH AUTHENTICATION EVENTS
+--------------------------------------------------
+No matching events found.
+
+[2] FAILED ATTEMPTS BY SOURCE IP
+--------------------------------------------------
+
+[3] ALERT SEVERITY
+--------------------------------------------------
+
+[4] TOTAL FAILED AUTHENTICATION EVENTS
+--------------------------------------------------
+0
+
+[5] INVESTIGATION SUMMARY
+--------------------------------------------------
+No matching alerts were identified.
+
+==================================================
+          INVESTIGATION COMPLETE
+==================================================

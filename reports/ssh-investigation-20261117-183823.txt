@@ -1,0 +1,37 @@
+==================================================
+         SSH SECURITY INVESTIGATION REPORT
+==================================================
+
+Detection Rule: 100100
+Log Source: /var/ossec/logs/alerts/alerts.json
+Analysis Date: Tue Nov 17 06:38:23 PM UTC 2026
+
+[1] FAILED SSH AUTHENTICATION EVENTS
+--------------------------------------------------
+TIMESTAMP                    USERNAME        SOURCE IP          ENDPOINT             SEVERITY  
+2026-11-17T00:28:36.807+0000 analyst         Not recorded       ubuntu-endpoint      10        
+2026-11-17T00:59:15.795+0000 analyst         Not recorded       ubuntu-endpoint      10        
+2026-11-17T02:34:30.240+0000 Unknown         127.0.0.1          siem-server          10        
+
+[2] FAILED ATTEMPTS BY SOURCE IP
+--------------------------------------------------
+1        127.0.0.1
+2        Not recorded
+
+[3] ALERT SEVERITY
+--------------------------------------------------
+Severity 10: 3 event(s)
+
+[4] TOTAL FAILED AUTHENTICATION EVENTS
+--------------------------------------------------
+3
+
+[5] INVESTIGATION SUMMARY
+--------------------------------------------------
+Matching authentication alerts were identified.
+Review source IPs and affected accounts.
+Investigate unrecorded source IP fields.
+
+==================================================
+          INVESTIGATION COMPLETE
+==================================================
