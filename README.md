@@ -100,4 +100,7 @@ This project was developed in a controlled lab environment for educational and c
 Author: Lysthiano
  Repository: wazuh-siem-ssh-detection-investigation
 
+<<<<<<< HEAD
  
+=======
+>>>>>>> 9bb2946 (Improve project documentation and README)
