@@ -1,0 +1,10 @@
+Project Screenshots
+1. Wazuh Endpoint Overview
+Displays the registered Ubuntu endpoint, agent status, operating system information, and system inventory.
+2. Security Events Dashboard
+Demonstrates centralized security event monitoring, event activity, and dashboard analytics.
+3. Authentication Event Investigation
+Displays detected authentication failures and related security events generated during controlled SSH authentication testing.
+
+
+
