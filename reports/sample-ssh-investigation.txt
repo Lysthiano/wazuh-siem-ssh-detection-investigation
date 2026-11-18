@@ -1,0 +1,36 @@
+==================================================
+         SSH SECURITY INVESTIGATION REPORT
+==================================================
+
+Detection Rule: 5760
+Log Source: /var/ossec/logs/alerts/alerts.json
+Analysis Date: Wed Nov 18 06:06:20 AM UTC 2026
+
+[1] FAILED SSH AUTHENTICATION EVENTS
+--------------------------------------------------
+TIMESTAMP                    USERNAME        SOURCE IP          ENDPOINT             SEVERITY
+2026-11-18T04:18:21.846+0000 analyst         192.168.64.1       siem-server          5
+2026-11-18T04:18:25.858+0000 analyst         192.168.64.1       siem-server          5
+2026-11-18T04:18:33.875+0000 analyst         192.168.64.1       siem-server          5
+
+[2] FAILED ATTEMPTS BY SOURCE IP
+--------------------------------------------------
+3        192.168.64.1
+
+[3] ALERT SEVERITY
+--------------------------------------------------
+Severity 5: 3 event(s)
+
+[4] TOTAL FAILED AUTHENTICATION EVENTS
+--------------------------------------------------
+3
+
+[5] INVESTIGATION SUMMARY
+--------------------------------------------------
+Matching authentication alerts were identified.
+Review source IPs and affected accounts.
+Investigate unrecorded source IP fields.
+
+==================================================
+          INVESTIGATION COMPLETE
+==================================================

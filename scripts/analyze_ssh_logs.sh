@@ -3,7 +3,7 @@
 set -euo pipefail
 
 LOG_FILE="/var/ossec/logs/alerts/alerts.json"
-RULE_ID="100100"
+RULE_ID="5760"
 REPORT_DIR="reports"
 
 mkdir -p "$REPORT_DIR"
@@ -16,31 +16,63 @@ if ! sudo test -r "$LOG_FILE"; then
 fi
 
 # Extract and normalize matching events
-EVENTS=$(sudo jq -cs --arg rule "$RULE_ID" '
-[
-  .[] |
+EVENTS=$(sudo jq -c --arg rule "$RULE_ID" '
   (if type == "array" then .[] else . end) |
   select(type == "object") |
+<<<<<<< HEAD
   select(((.rule.id? // .rule_id? // "") | tostring) == $rule)
   ) |
+=======
+  . as $event |
+  (
+    if ($event.rule | type) == "object" then
+      ($event.rule.id // "")
+    elif ($event.rule | type) == "array" then
+      ($event.rule[0].id // $event.rule[0] // "")
+    else
+      ($event.rule_id // "")
+    end
+    | tostring
+  ) as $rid |
+  select($rid == $rule) |
+>>>>>>> 0f4debb (Complete SSH security investigation automation)
   {
-    timestamp: (.timestamp // "Unknown"),
+    timestamp: ($event.timestamp // "Unknown"),
     username: (
-      .data.srcuser? //
-      .data.dstuser? //
-      .data.user? //
+      $event.data.srcuser //
+      $event.data.dstuser //
+      $event.data.user //
       "Unknown"
     ),
-    source_ip: (.data.srcip? // "Not recorded"),
-    endpoint: (.agent.name? // "Unknown"),
-    severity: (.rule.level? // "Not recorded"),
-    tty: (.data.tty? // "Not recorded")
+    source_ip: ($event.data.srcip // "Not recorded"),
+    endpoint: ($event.agent.name // "Unknown"),
+    severity: (
+      if ($event.rule | type) == "object"
+      then ($event.rule.level // "Not recorded")
+      else "Not recorded"
+      end
+    ),
+    tty: ($event.data.tty // "Not recorded")
   }
-]
 ' "$LOG_FILE")
+
 
 TOTAL=$(jq 'length' <<< "$EVENTS")
 
+# Normalize extracted events into one JSON array
+NORMALIZED_EVENTS=$(jq -s '
+  [
+    .[]
+    | if type == "string" then
+        (try fromjson catch .)
+      else .
+      end
+  ]
+  | flatten
+' <<< "$EVENTS")
+
+# Count matching events
+TOTAL=$(jq 'length' <<< "$NORMALIZED_EVENTS")
 {
     echo "=================================================="
     echo "         SSH SECURITY INVESTIGATION REPORT"
@@ -60,17 +92,22 @@ TOTAL=$(jq 'length' <<< "$EVENTS")
         printf "%-28s %-15s %-18s %-20s %-10s\n" \
             "TIMESTAMP" "USERNAME" "SOURCE IP" "ENDPOINT" "SEVERITY"
 
-        jq -r '.[] | [
-            .timestamp,
-            .username,
-            .source_ip,
-            .endpoint,
-            (.severity | tostring)
-        ] | @tsv' <<< "$EVENTS" |
-        while IFS=$'\t' read -r timestamp username ip endpoint severity; do
-            printf "%-28s %-15s %-18s %-20s %-10s\n" \
-                "$timestamp" "$username" "$ip" "$endpoint" "$severity"
-        done
+        jq -r '
+  .[]
+  | [
+      .timestamp // "Unknown",
+      .username // "Unknown",
+      .source_ip // "Not recorded",
+      .endpoint // "Unknown",
+      (.severity | tostring)
+    ]
+  | @tsv
+' <<< "$NORMALIZED_EVENTS" |
+while IFS=$'\t' read -r timestamp username ip endpoint severity; do
+    printf "%-28s %-15s %-18s %-20s %-10s\n" \
+        "$timestamp" "$username" "$ip" "$endpoint" "$severity"
+done
+
     fi
 
     echo
@@ -80,7 +117,8 @@ TOTAL=$(jq 'length' <<< "$EVENTS")
     jq -r '
       group_by(.source_ip)[]
       | "\(length)\t\(.[0].source_ip)"
-    ' <<< "$EVENTS" |
+    ' <<< "$NORMALIZED_EVENTS" |
+
     while IFS=$'\t' read -r count ip; do
         printf "%-8s %s\n" "$count" "$ip"
     done
@@ -92,7 +130,7 @@ TOTAL=$(jq 'length' <<< "$EVENTS")
     jq -r '
       group_by(.severity)[]
       | "Severity \(.[0].severity): \(length) event(s)"
-    ' <<< "$EVENTS"
+    ' <<< "$NORMALIZED_EVENTS"
 
     echo
     echo "[4] TOTAL FAILED AUTHENTICATION EVENTS"

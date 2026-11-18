@@ -1,0 +1,4 @@
+
+# Generated investigation reports
+reports/*.txt
+!reports/sample-ssh-investigation.txt
