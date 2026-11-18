@@ -21,7 +21,7 @@ EVENTS=$(sudo jq -cs --arg rule "$RULE_ID" '
   .[] |
   (if type == "array" then .[] else . end) |
   select(type == "object") |
-  select(((.rule.id? // .rule_id? // "") | tostring) == $rule
+  select(((.rule.id? // .rule_id? // "") | tostring) == $rule)
   ) |
   {
     timestamp: (.timestamp // "Unknown"),
